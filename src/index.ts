@@ -9,7 +9,6 @@ import {
 } from '@sinclair/typebox';
 import {
   SchemaDefinition,
-  SchemaDefinitionProperty,
   SchemaDefinitionType,
   SchemaTypeOptions,
 } from 'mongoose';
