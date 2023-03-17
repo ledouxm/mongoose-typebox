@@ -11,13 +11,14 @@ import {
   SchemaDefinition,
   SchemaDefinitionProperty,
   SchemaDefinitionType,
+  SchemaTypeOptions,
 } from 'mongoose';
 
-function createMongooseSchemaFromTypeBox(schema: TObject) {
+function typeBoxToMongooseSchemaDefinition(schema: TObject) {
   return parseObject(schema);
 }
 
-function parse(entry: TSchema): SchemaDefinitionProperty<any> {
+function parse(entry: TSchema): SchemaTypeOptions<any> {
   if (isPrimitive(entry)) {
     return parsePrimitive(entry);
   } else if (entry.type === 'object') {
@@ -38,11 +39,12 @@ function isPrimitive(entry: TSchema) {
 }
 
 function parsePrimitive(entry: TSchema) {
-  const type = entry.type;
+  const type: string = entry.type;
 
+  // parse string schema
   if (type === 'string') {
     const e = entry as StringOptions<typeof entry.format>;
-    const def: SchemaDefinitionProperty<any> = {};
+    const def: SchemaTypeOptions<string> = {};
 
     def.type = String;
 
@@ -57,9 +59,10 @@ function parsePrimitive(entry: TSchema) {
     return def;
   }
 
+  // parse numeric schema
   if (type === 'number' || type === 'integer') {
     const e = entry as NumericOptions;
-    const def: SchemaDefinitionProperty<any> = {};
+    const def: SchemaTypeOptions<number> = {};
 
     def.type = Number;
 
@@ -74,6 +77,7 @@ function parsePrimitive(entry: TSchema) {
     return def;
   }
 
+  // parse boolean schema
   if (type === 'boolean') {
     return { type: Boolean };
   }
@@ -84,8 +88,8 @@ function parsePrimitive(entry: TSchema) {
 function parseObject(entry: TObject) {
   const objectDef: SchemaDefinition<SchemaDefinitionType<any>> = {};
 
-  if (!!entry.instanceOf) {
-    const type = entry.instanceOf;
+  if (entry.instanceOf) {
+    const type: string = entry.instanceOf;
 
     if (type === 'Date') {
       return { type: Date };
@@ -96,7 +100,7 @@ function parseObject(entry: TObject) {
 
   for (const key in entry.properties) {
     const property = entry.properties[key];
-    const def: any = parse(property);
+    const def = parse(property);
 
     if (def) {
       if (def.type && entry.required?.includes(key)) {
@@ -116,10 +120,10 @@ function parseObject(entry: TObject) {
 }
 
 function parseArray(entry: TArray) {
-  const itemDef: any = parse(entry.items);
-  const def: SchemaDefinitionProperty<Array<any>> = {};
+  const itemDef = parse(entry.items);
+  const def: SchemaTypeOptions<Array<any>> = {};
 
-  def.type = isPrimitive(itemDef) ? [itemDef.type] : [itemDef];
+  def.type = isPrimitive(entry.items) ? [itemDef.type] : [itemDef];
 
   return def;
 }
@@ -134,11 +138,11 @@ function parseRef(entry: TRef) {
 function parseEnum(entry: TEnum) {
   const options = entry.anyOf;
   const values = options.map((option) => option.const ?? option.static);
-  const def: any = parse({ ...options[0] });
+  const def = parse({ ...options[0] });
 
   def.enum = values;
 
   return def;
 }
 
-export default createMongooseSchemaFromTypeBox;
+export default typeBoxToMongooseSchemaDefinition;
