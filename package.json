@@ -1,5 +1,5 @@
 {
-  "name": "typebox-to-mongoose-schema-definition",
+  "name": "@xod/typebox-to-mongoose-schema-definition",
   "version": "1.0.0",
   "description": "Convert Typebox to Mongoose schema definition",
   "main": "dist/index.js",
