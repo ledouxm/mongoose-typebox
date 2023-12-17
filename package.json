@@ -1,6 +1,6 @@
 {
     "name": "mongoose-typebox",
-    "version": "0.0.1",
+    "version": "0.1.0",
     "description": "Mongoose schema generator using typebox",
     "keywords": [
         "mongoose",
@@ -25,7 +25,7 @@
         "tsup": "^8.0.1"
     },
     "peerDependencies": {
-        "mongoose": "^8.0.3",
+        "mongoose": ">7",
         "@sinclair/typebox": "^0.31.28",
         "typescript": "^5.0.0"
     }
