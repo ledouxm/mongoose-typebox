@@ -1,7 +1,7 @@
 {
     "name": "mongoose-typebox",
     "author": "Stephen Odebiyi & Martin Ledoux",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Mongoose schema generator using typebox",
     "keywords": [
         "mongoose",
@@ -26,7 +26,7 @@
         "tsup": "^8.0.1"
     },
     "peerDependencies": {
-        "mongoose": ">7",
+        "mongoose": "*",
         "@sinclair/typebox": "^0.31.28",
         "typescript": "^5.0.0"
     }
