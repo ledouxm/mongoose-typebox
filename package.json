@@ -1,7 +1,7 @@
 {
     "name": "mongoose-typebox",
     "author": "Stephen Odebiyi & Martin Ledoux",
-    "version": "0.1.1",
+    "version": "0.2.0",
     "description": "Mongoose schema generator using typebox",
     "keywords": [
         "mongoose",

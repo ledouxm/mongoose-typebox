@@ -63,33 +63,42 @@ const optionsMap = {
     minByteLength: "minlength",
 };
 
-function parsePrimitive(entry: TSchema) {
+function getPrimitiveType(entry: TSchema) {
     const type: string = entry.type;
-    const def: SchemaTypeOptions<any> = {};
 
-    if (primitiveTypes.includes(type)) {
-        def.type = primitiveTypesMap[type as keyof typeof primitiveTypesMap];
-
-        for (const key in entry) {
-            if (key in optionsMap) {
-                def[optionsMap[key as keyof typeof optionsMap]] = entry[key];
-            }
-        }
-
-        return { ...entry.mongoose, ...def };
+    if (entry.mongoose?.ref) {
+        return mongoose.Schema.Types.ObjectId;
     }
 
-    throw new Error(`${type} in primitive not handled yet`);
+    return primitiveTypesMap[type as keyof typeof primitiveTypesMap];
 }
 
-function parseObject(entry: TObject) {
+function parsePrimitive(entry: TSchema) {
+    const def: SchemaTypeOptions<any> = {};
+
+    def.type = getPrimitiveType(entry); //primitiveTypesMap[type as keyof typeof primitiveTypesMap];
+
+    for (const key in entry) {
+        if (key in optionsMap) {
+            def[optionsMap[key as keyof typeof optionsMap]] = entry[key];
+        }
+    }
+
+    return { ...entry.mongoose, ...def };
+}
+
+export function parseObject(entry: TObject) {
     const objectDef: SchemaDefinition<SchemaDefinitionType<any>> = {};
 
     for (const key in entry.properties) {
         const property = entry.properties[key];
         const def = parse(property);
         if (def) {
-            if (def.type && entry.required?.includes(key)) {
+            if (
+                def.type &&
+                def.type !== mongoose.Schema.Types.ObjectId &&
+                entry.required?.includes(key)
+            ) {
                 def.required = true;
             }
 
@@ -103,6 +112,10 @@ function parseObject(entry: TObject) {
 function parseArray(entry: TArray) {
     const itemDef = parse(entry.items);
     const def: SchemaTypeOptions<Array<any>> = {};
+
+    if (itemDef.ref) {
+        return [itemDef];
+    }
 
     def.type = isPrimitive(entry.items) ? [itemDef.type] : [itemDef];
 
