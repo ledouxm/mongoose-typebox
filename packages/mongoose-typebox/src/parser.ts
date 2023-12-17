@@ -1,5 +1,6 @@
 import { Kind, Static, TArray, TEnum, TObject, TRef, TSchema } from "@sinclair/typebox";
 import mongoose, {
+    Schema,
     SchemaDefinition,
     SchemaDefinitionType,
     SchemaOptions,
@@ -8,19 +9,16 @@ import mongoose, {
 
 export function typeboxToMongooseSchema<
     T extends TObject<any>,
-    Extra extends SchemaOptions<Static<T>>
+    const Extra extends SchemaOptions<Static<T>>
 >(schema: T, options?: Extra) {
+    type DocTypeMethods = Extra["methods"];
+    type DocType = Static<T> & DocTypeMethods;
+
     const schemaDefinition = parseObject(schema);
-    const mongooseSchema = new mongoose.Schema<DocTypeWithMethods<T, Extra>>(
-        schemaDefinition,
-        options
-    );
+    const mongooseSchema = new mongoose.Schema<DocType>(schemaDefinition, options);
 
     return mongooseSchema;
 }
-
-type DocTypeWithMethods<T extends TObject, Extra extends SchemaOptions<Static<T>>> = Static<T> &
-    Extra["methods"];
 
 function parse(entry: TSchema): SchemaTypeOptions<any> {
     if (isPrimitive(entry)) {
@@ -61,6 +59,7 @@ const optionsMap = {
     maximum: "max",
     default: "default",
     minByteLength: "minlength",
+    maxByteLength: "maxlength",
 };
 
 function getPrimitiveType(entry: TSchema) {

@@ -30,7 +30,10 @@ Or whatever we use these days
 // Declare a typescript schema
 const userTSchema = Type.Object({
     username: Type.String({ minLength: 3, maxLength: 20, mongoose: { unique: true } }),
-    password: Type.Optional(Type.String({ minLength: 6 })),
+    password: Type.String({ minLength: 6 }),
+    firstName: Type.String(),
+    lastName: Type.String(),
+    middleName: Type.Optional(Type.String()),
 });
 
 // Convert it
@@ -40,6 +43,94 @@ const mongooseSchema = typeboxToMongooseSchema(userTSchema);
 const userModel = mongoose.model("Users", mongooseSchema);
 const users = await userModel.find();
 ```
+
+### Extra data
+
+#### Methods
+
+Anything you would've used as the second arg in `new mongoose.Schema()`, you can use as the second arg of `typeboxToMongooseSchema`
+
+However `statics` are not supported yet
+
+```ts
+const mongooseSchema = typeboxToMongooseSchema(userTSchema, {
+    toJSON: {
+        transform: function (_doc, ret) {
+            delete ret.password;
+        },
+    },
+    methods: {
+        getFullName: function () {
+            return [this.firstName, this.middleName, this.lastName].filter(Boolean).join(" ");
+        },
+    },
+});
+```
+
+### How to get x mongoose types
+
+#### Enum
+
+```ts
+Type.Union([Type.Literal("on"), Type.Literal("off")]);
+```
+
+or
+
+```ts
+enum Status {
+    On = "on",
+    Off = "off",
+}
+
+Type.Enum(Status),
+```
+
+#### Buffer
+
+```ts
+Type.Uint8Array();
+```
+
+#### Mixed
+
+```ts
+Type.Any();
+```
+
+#### ObjectId (Ref)
+
+```ts
+Type.String({ ref: "Ref" });
+```
+
+or if the relation is 0,n
+
+```ts
+Type.Array(Type.String({ ref: "Ref" }));
+```
+
+#### Decimal128
+
+```ts
+Type.Number({ mongoose: { type: mongoose.Types.Decimal128 } });
+```
+
+#### BigInt
+
+```ts
+Type.Number({ mongoose: { type: mongoose.Types.BigInt } });
+```
+
+#### UUID
+
+```ts
+Type.String({ mongoose: { type: mongoose.Types.UUID } });
+```
+
+#### Map
+
+Not supported
 
 ## Versions
 

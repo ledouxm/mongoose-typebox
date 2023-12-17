@@ -1,33 +1,11 @@
 {
-    "name": "mongoose-typebox",
-    "author": "Stephen Odebiyi & Martin Ledoux",
-    "version": "0.2.0",
-    "description": "Mongoose schema generator using typebox",
-    "keywords": [
-        "mongoose",
-        "schema",
-        "typebox"
-    ],
-    "main": "dist/index.js",
-    "module": "src/index.ts",
-    "type": "module",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
+    "name": "mongoose-typebox-root",
+    "private": true,
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/astahmer/typed-openapi.git"
     },
-    "scripts": {
-        "build": "tsup src/index.ts --dts --format cjs,esm"
-    },
-    "devDependencies": {
-        "bun-types": "latest",
-        "tsup": "^8.0.1"
-    },
-    "peerDependencies": {
-        "mongoose": "*",
-        "@sinclair/typebox": "^0.31.28",
-        "typescript": "^5.0.0"
+    "dependencies": {
+        "mongoose": "^8.0.3"
     }
 }

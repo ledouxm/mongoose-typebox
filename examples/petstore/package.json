@@ -1,11 +1,13 @@
 {
-  "name": "petstore",
-  "module": "index.ts",
-  "type": "module",
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+    "name": "petstore",
+    "module": "index.ts",
+    "type": "module",
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "dependencies": {
+        "@sinclair/typebox": "^0.31.28",
+        "mongoose": "^8.0.3",
+        "mongoose-typebox": "workspace:*"
+    }
 }

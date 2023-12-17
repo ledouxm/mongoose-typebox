@@ -1,7 +1,7 @@
-import { describe, expect, it } from "bun:test";
-import { parseObject } from "../src/parser";
 import { Type } from "@sinclair/typebox";
 import mongoose from "mongoose";
+import { describe, expect, it } from "vitest";
+import { parseObject } from "../src/parser";
 
 describe("main", () => {
     it("should generate a required string", () => {
@@ -87,6 +87,7 @@ describe("main", () => {
             buffer: {
                 type: Buffer,
                 minlength: 5,
+                maxlength: 10,
                 required: true,
             },
         });
@@ -118,6 +119,46 @@ describe("main", () => {
         expect(mongooseSchemaDef).toEqual({
             mixed: {
                 type: mongoose.Schema.Types.Mixed,
+                required: true,
+            },
+        });
+    });
+
+    it("should generate an enum with string literals", () => {
+        const schema = Type.Object({
+            literal: Type.Union([
+                Type.Literal("placed"),
+                Type.Literal("approved"),
+                Type.Literal("delivered"),
+            ]),
+        });
+
+        const mongooseSchemaDef = parseObject(schema);
+        expect(mongooseSchemaDef).toEqual({
+            literal: {
+                type: String,
+                enum: ["placed", "approved", "delivered"],
+                required: true,
+            },
+        });
+    });
+
+    it("should generate an enum with an enum", () => {
+        enum Status {
+            Placed = "placed",
+            Approved = "approved",
+            Delivered = "delivered",
+        }
+
+        const schema = Type.Object({
+            literal: Type.Enum(Status),
+        });
+
+        const mongooseSchemaDef = parseObject(schema);
+        expect(mongooseSchemaDef).toEqual({
+            literal: {
+                type: String,
+                enum: ["placed", "approved", "delivered"],
                 required: true,
             },
         });
