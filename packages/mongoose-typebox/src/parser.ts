@@ -1,6 +1,5 @@
 import { Kind, Static, TArray, TEnum, TObject, TRef, TSchema } from "@sinclair/typebox";
 import mongoose, {
-    Schema,
     SchemaDefinition,
     SchemaDefinitionType,
     SchemaOptions,
@@ -11,11 +10,11 @@ export function typeboxToMongooseSchema<
     T extends TObject<any>,
     const Extra extends SchemaOptions<Static<T>>
 >(schema: T, options?: Extra) {
-    type DocTypeMethods = Extra["methods"];
-    type DocType = Static<T> & DocTypeMethods;
-
     const schemaDefinition = parseObject(schema);
-    const mongooseSchema = new mongoose.Schema<DocType>(schemaDefinition, options);
+    const mongooseSchema = new mongoose.Schema<Static<T>, Extra["methods"]>(
+        schemaDefinition,
+        options
+    );
 
     return mongooseSchema;
 }
@@ -66,7 +65,7 @@ function getPrimitiveType(entry: TSchema) {
     const type: string = entry.type;
 
     if (entry.mongoose?.ref) {
-        return mongoose.Schema.Types.ObjectId;
+        return mongoose.Types.ObjectId;
     }
 
     return primitiveTypesMap[type as keyof typeof primitiveTypesMap];
@@ -93,11 +92,7 @@ export function parseObject(entry: TObject) {
         const property = entry.properties[key];
         const def = parse(property);
         if (def) {
-            if (
-                def.type &&
-                def.type !== mongoose.Schema.Types.ObjectId &&
-                entry.required?.includes(key)
-            ) {
+            if (def.type && def.type !== mongoose.Types.ObjectId && entry.required?.includes(key)) {
                 def.required = true;
             }
 

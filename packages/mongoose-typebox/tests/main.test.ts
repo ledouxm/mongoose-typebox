@@ -172,7 +172,7 @@ describe("main", () => {
         const mongooseSchemaDef = parseObject(schema);
         expect(mongooseSchemaDef).toEqual({
             objectId: {
-                type: mongoose.Schema.Types.ObjectId,
+                type: mongoose.Types.ObjectId,
                 ref: "Ref1",
             },
         });
@@ -187,7 +187,7 @@ describe("main", () => {
         expect(mongooseSchemaDef).toEqual({
             array: [
                 {
-                    type: mongoose.Schema.Types.ObjectId,
+                    type: mongoose.Types.ObjectId,
                     ref: "Ref2",
                 },
             ],
