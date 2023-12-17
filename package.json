@@ -1,0 +1,32 @@
+{
+    "name": "mongoose-typebox",
+    "version": "0.0.1",
+    "description": "Mongoose schema generator using typebox",
+    "keywords": [
+        "mongoose",
+        "schema",
+        "typebox"
+    ],
+    "main": "dist/index.js",
+    "module": "src/index.ts",
+    "type": "module",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.js",
+            "types": "./dist/index.d.ts"
+        }
+    },
+    "scripts": {
+        "build": "tsup src/index.ts --dts --format cjs,esm"
+    },
+    "devDependencies": {
+        "bun-types": "latest",
+        "tsup": "^8.0.1"
+    },
+    "peerDependencies": {
+        "mongoose": "^8.0.3",
+        "@sinclair/typebox": "^0.31.28",
+        "typescript": "^5.0.0"
+    }
+}
