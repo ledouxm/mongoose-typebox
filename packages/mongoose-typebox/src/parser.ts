@@ -1,5 +1,6 @@
 import { Kind, Static, TArray, TEnum, TObject, TRef, TSchema } from "@sinclair/typebox";
 import mongoose, {
+    Model,
     SchemaDefinition,
     SchemaDefinitionType,
     SchemaOptions,
@@ -8,15 +9,23 @@ import mongoose, {
 
 export function typeboxToMongooseSchema<
     T extends TObject<any>,
-    const Extra extends SchemaOptions<Static<T>>
->(schema: T, options?: Extra) {
-    const schemaDefinition = parseObject(schema);
-    const mongooseSchema = new mongoose.Schema<Static<T>, Extra["methods"]>(
-        schemaDefinition,
-        options
-    );
+    Extra extends SchemaOptions<Static<T>>
+>(tSchema: T, options?: Extra) {
+    type DocType = Static<T>;
+    type ModelWithStatics = Model<DocType, {}, Extra["methods"] & Extra["virtuals"]> &
+        Extra["statics"];
 
-    return mongooseSchema;
+    const schemaDefinition = parseObject(tSchema);
+    const schema = new mongoose.Schema<DocType, ModelWithStatics>(schemaDefinition, options);
+
+    return schema;
+}
+
+export function makeMongooseModel<DocType, ModelType>(
+    name: string,
+    schema: mongoose.Schema<DocType, ModelType>
+) {
+    return mongoose.model<DocType, ModelType>(name, schema);
 }
 
 function parse(entry: TSchema): SchemaTypeOptions<any> {
@@ -52,11 +61,11 @@ const primitiveTypesMap = {
 };
 
 const optionsMap = {
-    maxLength: "maxlength",
+    default: "default",
     minLength: "minlength",
+    maxLength: "maxlength",
     minimum: "min",
     maximum: "max",
-    default: "default",
     minByteLength: "minlength",
     maxByteLength: "maxlength",
 };

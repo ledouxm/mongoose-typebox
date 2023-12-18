@@ -1,7 +1,7 @@
 import { SchemaTypeOptions } from "mongoose";
-import { typeboxToMongooseSchema } from "./parser";
+import { typeboxToMongooseSchema, makeMongooseModel } from "./parser";
 
-export { typeboxToMongooseSchema };
+export { typeboxToMongooseSchema, makeMongooseModel };
 
 declare module "@sinclair/typebox" {
     interface SchemaOptions {

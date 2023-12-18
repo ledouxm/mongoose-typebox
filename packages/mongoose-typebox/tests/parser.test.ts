@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 import { describe, expect, it } from "vitest";
 import { parseObject } from "../src/parser";
 
-describe("main", () => {
+describe("Parser tests", () => {
     it("should generate a required string", () => {
         const schema = Type.Object({
             string: Type.String({

@@ -26,10 +26,25 @@ Or whatever we use these days
 
 ### Basic
 
+Some mongoose options are automatically inferred from typebox options :
+| **typebox** | **mongoose** |
+|---------------|--------------|
+| minLength | minlength |
+| maxLength | maxlength |
+| minimum | min |
+| maximum | max |
+| minByteLength | minlength |
+
+All of them options are available in `{ mongoose: { ... } }` (these **overwrites** the ones above)
+
 ```ts
 // Declare a typescript schema
 const userTSchema = Type.Object({
-    username: Type.String({ minLength: 3, maxLength: 20, mongoose: { unique: true } }),
+    username: Type.String({
+        minLength: 3,
+        maxLength: 20,
+        mongoose: { unique: true },
+    }),
     password: Type.String({ minLength: 6 }),
     firstName: Type.String(),
     lastName: Type.String(),
@@ -37,23 +52,23 @@ const userTSchema = Type.Object({
 });
 
 // Convert it
-const mongooseSchema = typeboxToMongooseSchema(userTSchema);
-
+const userSchema = typeboxToMongooseSchema(userTSchema);
 // Use it
-const userModel = mongoose.model("Users", mongooseSchema);
+const userModel = mongoose.model("Users", userSchema);
+
 const users = await userModel.find();
 ```
 
 ### Extra data
 
-#### Methods
+#### Methods & Statics
 
 Anything you would've used as the second arg in `new mongoose.Schema()`, you can use as the second arg of `typeboxToMongooseSchema`
 
-However `statics` are not supported yet
+> :warning: However, virtuals are not yet supported
 
 ```ts
-const mongooseSchema = typeboxToMongooseSchema(userTSchema, {
+const userSchema = typeboxToMongooseSchema(userTSchema, {
     toJSON: {
         transform: function (_doc, ret) {
             delete ret.password;
@@ -64,8 +79,17 @@ const mongooseSchema = typeboxToMongooseSchema(userTSchema, {
             return [this.firstName, this.middleName, this.lastName].filter(Boolean).join(" ");
         },
     },
+    statics: {
+        getByFirstName: function (firstName: string) {
+            return this.find({ firstName });
+        },
+    },
 });
+
+const userModel = makeMongooseModel("Users", userSchema);
 ```
+
+Since mongoose.Model is a generic type, you **must** use the `makeMongooseModel` helper function to keep **statics and methods type-safety**
 
 ### How to get x mongoose types
 
@@ -130,7 +154,7 @@ Type.String({ mongoose: { type: mongoose.Types.UUID } });
 
 #### Map
 
-Not supported
+:warning: Not supported
 
 ## Versions
 
