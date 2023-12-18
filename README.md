@@ -156,6 +156,36 @@ Type.String({ mongoose: { type: mongoose.Types.UUID } });
 
 :warning: Not supported
 
+## Usage with Fastify
+
+If you use this lib along with fastify, you may need to use this snippet
+
+```ts
+import Ajv from "ajv";
+import addFormats from "ajv-formats";
+
+const ajv = addFormats(new Ajv({}), [
+    "date-time",
+    "time",
+    "date",
+    "email",
+    "hostname",
+    "ipv4",
+    "ipv6",
+    "uri",
+    "uri-reference",
+    "uuid",
+    "uri-template",
+    "json-pointer",
+    "relative-json-pointer",
+    "regex",
+]).addKeyword("mongoose");
+
+server.setValidatorCompiler(({ schema }) => {
+    return ajv.compile(schema);
+});
+```
+
 ## Versions
 
 This lib has been tested using mongoose ^7 and ^8, and typebox ^0.31.28

@@ -25,8 +25,6 @@ describe("Model tests", () => {
                 lastName: Type.String(),
             }),
             {
-                toJSON: { virtuals: true },
-                toObject: { virtuals: true },
                 statics: {
                     findByFirstName: function (firstName: string) {
                         return this.find({ firstName });
