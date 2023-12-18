@@ -18,8 +18,16 @@ export function typeboxToMongooseSchema<
     const schemaDefinition = parseObject(tSchema);
     const schema = new mongoose.Schema<DocType, ModelWithStatics>(schemaDefinition, options);
 
+    cleanTSchema(tSchema);
+
     return schema;
 }
+
+const cleanTSchema = (tSchema: TObject) => {
+    Object.keys(tSchema.properties).forEach((key) => {
+        delete tSchema.properties[key].mongoose;
+    });
+};
 
 export function makeMongooseModel<DocType, ModelType>(
     name: string,

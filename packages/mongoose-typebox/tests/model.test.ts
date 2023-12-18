@@ -19,24 +19,22 @@ describe("Model tests", () => {
     });
 
     it("should", async () => {
-        const schema = typeboxToMongooseSchema(
-            Type.Object({
-                firstName: Type.String(),
-                lastName: Type.String(),
-            }),
-            {
-                statics: {
-                    findByFirstName: function (firstName: string) {
-                        return this.find({ firstName });
-                    },
+        const tSchema = Type.Object({
+            firstName: Type.String({ mongoose: { unique: true } }),
+            lastName: Type.String(),
+        });
+        const schema = typeboxToMongooseSchema(tSchema, {
+            statics: {
+                findByFirstName: function (firstName: string) {
+                    return this.find({ firstName });
                 },
-                methods: {
-                    getFullName: function () {
-                        return `${this.firstName} ${this.lastName}`;
-                    },
+            },
+            methods: {
+                getFullName: function () {
+                    return `${this.firstName} ${this.lastName}`;
                 },
-            }
-        );
+            },
+        });
 
         schema.pre("save", function (next) {
             expect(true).toBe(true);
@@ -55,5 +53,6 @@ describe("Model tests", () => {
         expect(retrievedDoc).toHaveLength(1);
 
         expect(doc.getFullName()).toEqual("John Doe");
+        expect(tSchema.properties.firstName.mongoose).not.toBeDefined();
     });
 });
