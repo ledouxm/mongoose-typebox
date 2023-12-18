@@ -74,6 +74,28 @@ describe("Parser tests", () => {
         });
     });
 
+    it("should generate a date from a Type.String", () => {
+        const schema = Type.Object({
+            date: Type.String({
+                format: "date-time",
+                default: new Date("2020-01-01"),
+                minimum: new Date("2020-01-01"),
+                maximum: new Date("2021-01-01"),
+            }),
+        });
+
+        const mongooseSchemaDef = parseObject(schema);
+        expect(mongooseSchemaDef).toEqual({
+            date: {
+                type: Date,
+                default: new Date("2020-01-01"),
+                min: new Date("2020-01-01"),
+                max: new Date("2021-01-01"),
+                required: true,
+            },
+        });
+    });
+
     it("should generate a buffer", () => {
         const schema = Type.Object({
             buffer: Type.Uint8Array({

@@ -85,6 +85,10 @@ function getPrimitiveType(entry: TSchema) {
         return mongoose.Types.ObjectId;
     }
 
+    if ((type === "string" && entry.format === "date-time") || entry.format === "date") {
+        return Date;
+    }
+
     return primitiveTypesMap[type as keyof typeof primitiveTypesMap];
 }
 
