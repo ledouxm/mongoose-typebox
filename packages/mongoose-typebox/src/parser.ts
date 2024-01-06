@@ -138,9 +138,7 @@ export function parseObject(entry: TObject) {
     const property = entry.properties[key];
     const isObject = entry.type === "object";
     const def = parse(property);
-    if (key) {
-      console.log(key, def);
-    }
+
     if (def) {
       if (
         def.type &&
