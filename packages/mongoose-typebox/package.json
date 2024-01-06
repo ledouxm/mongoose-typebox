@@ -1,35 +1,35 @@
 {
-    "name": "mongoose-typebox",
-    "author": "Stephen Odebiyi & Martin Ledoux",
-    "version": "0.4.2",
-    "description": "Mongoose schema generator using typebox",
-    "keywords": [
-        "mongoose",
-        "schema",
-        "typebox"
-    ],
-    "main": "dist/index.js",
-    "module": "src/index.ts",
-    "type": "module",
-    "exports": {
-        ".": {
-            "import": "./dist/index.js",
-            "require": "./dist/index.js",
-            "types": "./dist/index.d.ts"
-        }
-    },
-    "scripts": {
-        "build": "tsup src/index.ts --dts --format cjs,esm",
-        "test": "vitest"
-    },
-    "devDependencies": {
-        "bun-types": "latest",
-        "tsup": "^8.0.1",
-        "vitest": "^1.0.4"
-    },
-    "peerDependencies": {
-        "@sinclair/typebox": "^0.31.28",
-        "mongoose": "*",
-        "typescript": "^5.0.0"
+  "name": "mongoose-typebox",
+  "author": "Stephen Odebiyi & Martin Ledoux",
+  "version": "0.4.3",
+  "description": "Mongoose schema generator using typebox",
+  "keywords": [
+    "mongoose",
+    "schema",
+    "typebox"
+  ],
+  "main": "dist/index.js",
+  "module": "src/index.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
     }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --dts --format cjs,esm",
+    "test": "vitest"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "tsup": "^8.0.1",
+    "vitest": "^1.0.4"
+  },
+  "peerDependencies": {
+    "@sinclair/typebox": "^0.31.28",
+    "mongoose": "*",
+    "typescript": "^5.0.0"
+  }
 }
